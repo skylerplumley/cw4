@@ -53,7 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void createplan() {
     TextEditingController name = TextEditingController();
     TextEditingController descript = TextEditingController();
-    DateTime date = DateTime.now();
 
     showModalBottomSheet(
       isScrollControlled: true,
@@ -71,18 +70,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   controller: descript,
                   decoration: InputDecoration(hintText: 'Description')),
               SizedBox(height: 8),
-              TableCalendar(
-                  firstDay: DateTime(2025, 3, 1, 0, 0),
-                  lastDay: DateTime(2025, 3, 31, 0, 0),
-                  focusedDay: date,
-                  selectedDayPredicate: (day) => isSameDay(date, day),
-                  onDaySelected: (selected, focusedDay) {
-                    setState(() {
-                      date = focusedDay;
-                    });
-                  }),
               ElevatedButton(
-                onPressed: () => createtask(name.text, descript.text, date),
+                onPressed: () {
+                  createtask(name.text, descript.text, date);
+                  Navigator.pop(context);
+                },
                 child: Text('Save'),
               ),
             ],
@@ -102,16 +94,24 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink[200],
-        title: Text('Task Manager'),
+        title: Text('Travel Plans'),
       ),
       body: Column(
         children: [
           TableCalendar(
-            focusedDay: date,
-            firstDay: DateTime(2025, 3, 1, 0, 0),
-            lastDay: DateTime(2025, 3, 31, 0, 0),
-          ),
+              focusedDay: date,
+              firstDay: DateTime(2025, 3, 1, 0, 0),
+              lastDay: DateTime(2025, 3, 31, 0, 0),
+              selectedDayPredicate: (day) => isSameDay(date, day),
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  date = selectedDay;
+                });
+              }),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.pink[400],
+                foregroundColor: Colors.white),
             onPressed: createplan,
             child: Text('Create Plan'),
           ),
