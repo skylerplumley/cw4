@@ -51,6 +51,43 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void createplan() {
+    TextEditingController name = TextEditingController();
+    TextEditingController descript = TextEditingController();
+    DateTime date = DateTime.now();
+
+    showModalBottomSheet(
+      isScrollControlled: true,
+      isDismissible: true,
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.symmetric(),
+          child: Column(
+            children: [
+              TextField(
+                  controller: name,
+                  decoration: InputDecoration(hintText: 'Plan name')),
+              TextField(
+                  controller: descript,
+                  decoration: InputDecoration(hintText: 'Description')),
+              SizedBox(height: 8),
+              TableCalendar(
+                focusedDay: date,
+                firstDay: DateTime(2025, 3, 1, 0, 0),
+                lastDay: DateTime(2025, 3, 31, 0, 0),
+              ),
+              ElevatedButton(
+                onPressed: () => createtask(name.text, descript.text, date),
+                child: Text('Save'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,14 +97,14 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
+          ElevatedButton(
+            onPressed: createplan,
+            child: Text('Create Plan'),
+          ),
           TableCalendar(
             focusedDay: DateTime(2025, 3, 6, 0, 0),
             firstDay: DateTime(2025, 3, 1, 0, 0),
             lastDay: DateTime(2025, 3, 31, 0, 0),
-          ),
-          TextField(
-            controller: taskinput,
-            decoration: InputDecoration(hintText: 'Enter task'),
           ),
           SizedBox(height: 16),
           //ElevatedButton(onPressed: createtask, child: Text('Add')),
