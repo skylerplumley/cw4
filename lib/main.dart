@@ -92,6 +92,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void edittask(int index) {
+    taskinput.text = tasklist[index]['task'];
+    createplan();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return GestureDetector(
                   onDoubleTap: () => deletetask(index),
                   onHorizontalDragEnd: (_) => completedtask(index),
+                  onLongPress: () => edittask(index),
                   child: Container(
                     decoration: BoxDecoration(
                       color: task['completed'] ? Colors.green : Colors.red,
@@ -127,7 +133,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         Text(
                             "Plan:  ${task['task']}\nDescription:  ${task['description']}\nDate:  ${task['date']}"),
-                        //Text("${task['description']}\nDate: ${task['date']}"),
                       ],
                     ),
                   ),
