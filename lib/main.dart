@@ -30,12 +30,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void createtask(String task, String descript, DateTime date) {
     setState(() {
       tasklist.add({
-        'task': taskinput.text,
+        'task': task,
         'description': descript,
         'date': date,
         'completed': false
       });
-      taskinput.clear();
     });
   }
 
@@ -73,10 +72,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   decoration: InputDecoration(hintText: 'Description')),
               SizedBox(height: 8),
               TableCalendar(
-                focusedDay: date,
-                firstDay: DateTime(2025, 3, 1, 0, 0),
-                lastDay: DateTime(2025, 3, 31, 0, 0),
-              ),
+                  firstDay: DateTime(2025, 3, 1, 0, 0),
+                  lastDay: DateTime(2025, 3, 31, 0, 0),
+                  focusedDay: date,
+                  selectedDayPredicate: (day) => isSameDay(date, day),
+                  onDaySelected: (selected, focusedDay) {
+                    setState(() {
+                      date = focusedDay;
+                    });
+                  }),
               ElevatedButton(
                 onPressed: () => createtask(name.text, descript.text, date),
                 child: Text('Save'),
@@ -97,38 +101,39 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
+          TableCalendar(
+            focusedDay: date,
+            firstDay: DateTime(2025, 3, 1, 0, 0),
+            lastDay: DateTime(2025, 3, 31, 0, 0),
+          ),
           ElevatedButton(
             onPressed: createplan,
             child: Text('Create Plan'),
           ),
-          TableCalendar(
-            focusedDay: DateTime(2025, 3, 6, 0, 0),
-            firstDay: DateTime(2025, 3, 1, 0, 0),
-            lastDay: DateTime(2025, 3, 31, 0, 0),
-          ),
-          SizedBox(height: 16),
-          //ElevatedButton(onPressed: createtask, child: Text('Add')),
           SizedBox(height: 16),
           Expanded(
             child: ListView.builder(
-                itemCount: tasklist.length,
-                itemBuilder: (context, index) {
-                  return Row(
-                    children: [
-                      Checkbox(
-                        value: tasklist[index]['completed'],
-                        onChanged: (_) => completedtask(index),
-                      ),
-                      Expanded(
-                        child: Text(tasklist[index]['task']),
-                      ),
-                      TextButton(
-                        onPressed: () => deletetask(index),
-                        child: Text('Delete'),
-                      ),
-                    ],
-                  );
-                }),
+              itemCount: tasklist.length,
+              itemBuilder: (context, index) {
+                final task = tasklist[index];
+                return GestureDetector(
+                  onDoubleTap: () => deletetask(index),
+                  onHorizontalDragEnd: (_) => completedtask(index),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: task['completed'] ? Colors.green : Colors.red,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                            "Plan:  ${task['task']}\nDescription:  ${task['description']}\nDate:  ${task['date']}"),
+                        //Text("${task['description']}\nDate: ${task['date']}"),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
